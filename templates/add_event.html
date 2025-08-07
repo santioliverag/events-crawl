@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block title %}Agregar Evento Manual{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <a href="{{ url_for('dashboard') }}" class="text-primary hover:text-secondary flex items-center gap-2 mb-4">
+        <i class="fas fa-arrow-left"></i>
+        Volver al Dashboard
+    </a>
+</div>
+
+<div class="mb-8">
+    <h2 class="text-3xl font-bold text-gray-900">Crear Evento Manual</h2>
+    <p class="text-gray-600">Crea un evento personalizado para generar posts de Instagram</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Formulario -->
+    <div class="card p-6">
+        <h3 class="text-xl font-semibold text-gray-900 mb-6">Información del Evento</h3>
+        
+        <form id="event-form" enctype="multipart/form-data">
+            <div class="space-y-6">
+                <!-- Título -->
+                <div>
+                    <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+                        Título del Evento *
+                    </label>
+                    <input type="text" id="title" name="title" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                           placeholder="Ej: Concierto de Música Clásica">
+                </div>
+                
+                <!-- Fecha -->
+                <div>
+                    <label for="event_date" class="block text-sm font-medium text-gray-700 mb-2">
+                        Fecha del Evento
+                    </label>
+                    <input type="date" id="event_date" name="event_date"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+                
+                <!-- Descripción -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                        Descripción del Evento *
+                    </label>
+                    <textarea id="description" name="description" rows="4" required
+                              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                              placeholder="Describe el evento, incluye horarios, lugar, y detalles importantes..."></textarea>
+                    <p class="text-xs text-gray-500 mt-1">Esta descripción se usará en el post de Instagram</p>
+                </div>
+                
+                <!-- Imagen -->
+                <div>
+                    <label for="image" class="block text-sm font-medium text-gray-700 mb-2">
+                        Imagen del Evento
+                    </label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-primary transition-colors">
+                        <div class="space-y-1 text-center">
+                            <div id="image-preview" class="hidden mb-4">
+                                <img id="preview-img" src="" alt="Preview" class="mx-auto h-32 w-auto rounded-lg">
+                            </div>
+                            <div id="upload-prompt">
+                                <i class="fas fa-cloud-upload-alt text-gray-400 text-3xl mb-2"></i>
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="image" class="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-secondary focus-within:outline-none">
+                                        <span>Subir imagen</span>
+                                        <input id="image" name="image" type="file" class="sr-only" accept="image/*">
+                                    </label>
+                                    <p class="pl-1">o arrastra aquí</p>
+                                </div>
+                                <p class="text-xs text-gray-500">PNG, JPG, WEBP hasta 10MB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Enlace (opcional) -->
+                <div>
+                    <label for="link" class="block text-sm font-medium text-gray-700 mb-2">
+                        Enlace Adicional (opcional)
+                    </label>
+                    <input type="url" id="link" name="link"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                           placeholder="https://ejemplo.com">
+                </div>
+                
+                <!-- Opciones adicionales -->
+                <div class="border-t pt-6">
+                    <h4 class="text-md font-medium text-gray-900 mb-4">Opciones de Publicación</h4>
+                    
+                    <div class="space-y-3">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="generate_immediately" name="generate_immediately" checked
+                                   class="rounded border-gray-300 text-primary focus:ring-primary">
+                            <span class="ml-2 text-sm text-gray-600">Generar post automáticamente</span>
+                        </label>
+                        
+                        <label class="flex items-center">
+                            <input type="checkbox" id="publish_immediately" name="publish_immediately"
+                                   class="rounded border-gray-300 text-primary focus:ring-primary">
+                            <span class="ml-2 text-sm text-gray-600">Publicar en Instagram inmediatamente</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Botones -->
+                <div class="flex gap-3 pt-6">
+                    <button type="submit" class="btn btn-primary flex-1 justify-center" id="submit-btn">
+                        <i class="fas fa-plus"></i>
+                        Crear Evento
+                    </button>
+                    <button type="button" onclick="clearForm()" class="btn bg-gray-500 text-white hover:bg-gray-600">
+                        <i class="fas fa-times"></i>
+                        Limpiar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Preview -->
+    <div class="card p-6">
+        <h3 class="text-xl font-semibold text-gray-900 mb-6">Vista Previa</h3>
+        
+        <!-- Instagram Preview -->
+        <div class="bg-gray-50 rounded-lg p-4">
+            <div class="bg-white rounded-lg shadow-sm max-w-sm mx-auto">
+                <!-- Instagram Header -->
+                <div class="flex items-center p-3 border-b">
+                    <div class="w-8 h-8 bg-gradient-to-tr from-yellow-400 to-pink-500 rounded-full flex items-center justify-center">
+                        <span class="text-white text-xs font-bold">🌙</span>
+                    </div>
+                    <div class="ml-3">
+                        <p class="font-semibold text-sm">flet.lat</p>
+                        <p class="text-xs text-gray-500">Salto, Uruguay</p>
+                    </div>
+                </div>
+                
+                <!-- Post Image Preview -->
+                <div class="aspect-square bg-gray-200 relative" id="post-image-preview">
+                    <div class="w-full h-full flex items-center justify-center">
+                        <div class="text-center text-gray-400">
+                            <i class="fas fa-image text-3xl mb-2"></i>
+                            <p class="text-sm">Imagen del evento</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Instagram Actions -->
+                <div class="p-3">
+                    <div class="flex items-center mb-3">
+                        <i class="far fa-heart text-xl mr-3"></i>
+                        <i class="far fa-comment text-xl mr-3"></i>
+                        <i class="far fa-paper-plane text-xl"></i>
+                    </div>
+                    
+                    <!-- Caption Preview -->
+                    <div class="text-sm">
+                        <span class="font-semibold">flet.lat</span>
+                        <span class="ml-1" id="caption-preview">
+                            🎉 <span id="preview-title">Título del evento</span>
+                            <br><br>📅 <span id="preview-date">Fecha del evento</span>
+                            <br><br><span id="preview-description">Descripción del evento aparecerá aquí...</span>
+                            <br><br>#EventosSalto #Salto #Uruguay #Cultura
+                            <br><br>📍 Salto, Uruguay
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tips -->
+        <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+            <h4 class="font-medium text-blue-900 mb-2">💡 Consejos</h4>
+            <ul class="text-sm text-blue-700 space-y-1">
+                <li>• Usa títulos llamativos y descriptivos</li>
+                <li>• Incluye fecha, hora y lugar en la descripción</li>
+                <li>• Las imágenes cuadradas (1:1) funcionan mejor</li>
+                <li>• Evita texto muy pequeño en las imágenes</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Preview en tiempo real
+    function updatePreview() {
+        const title = document.getElementById('title').value || 'Título del evento';
+        const description = document.getElementById('description').value || 'Descripción del evento aparecerá aquí...';
+        const eventDate = document.getElementById('event_date').value;
+        
+        document.getElementById('preview-title').textContent = title;
+        document.getElementById('preview-description').textContent = description.substring(0, 150) + (description.length > 150 ? '...' : '');
+        
+        if (eventDate) {
+            const date = new Date(eventDate);
+            const formatted = date.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('preview-date').textContent = formatted;
+        } else {
+            document.getElementById('preview-date').textContent = 'Fecha del evento';
+        }
+    }
+
+    // Escuchar cambios en el formulario
+    document.getElementById('title').addEventListener('input', updatePreview);
+    document.getElementById('description').addEventListener('input', updatePreview);
+    document.getElementById('event_date').addEventListener('change', updatePreview);
+
+    // Preview de imagen
+    document.getElementById('image').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('preview-img');
+                const preview = document.getElementById('image-preview');
+                const prompt = document.getElementById('upload-prompt');
+                const postPreview = document.getElementById('post-image-preview');
+                
+                img.src = e.target.result;
+                preview.classList.remove('hidden');
+                prompt.classList.add('hidden');
+                
+                // Actualizar preview del post
+                postPreview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Enviar formulario
+    document.getElementById('event-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('submit-btn');
+        const original = showLoading(btn);
+        
+        const formData = new FormData(this);
+        
+        $.ajax({
+            url: '/api/create_manual_event',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false
+        })
+        .done(function(data) {
+            if (data.success) {
+                showAlert(data.message, 'success');
+                setTimeout(() => {
+                    window.location.href = data.redirect || '/';
+                }, 2000);
+            } else {
+                showAlert('Error: ' + data.error, 'error');
+            }
+        })
+        .fail(function() {
+            showAlert('Error de conexión', 'error');
+        })
+        .always(function() {
+            hideLoading(btn, original);
+        });
+    });
+
+    function clearForm() {
+        document.getElementById('event-form').reset();
+        document.getElementById('image-preview').classList.add('hidden');
+        document.getElementById('upload-prompt').classList.remove('hidden');
+        document.getElementById('post-image-preview').innerHTML = `
+            <div class="w-full h-full flex items-center justify-center">
+                <div class="text-center text-gray-400">
+                    <i class="fas fa-image text-3xl mb-2"></i>
+                    <p class="text-sm">Imagen del evento</p>
+                </div>
+            </div>
+        `;
+        updatePreview();
+    }
+
+    // Drag and drop
+    const dropZone = document.querySelector('[class*="border-dashed"]');
+    
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('border-primary', 'bg-blue-50');
+    });
+    
+    dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('border-primary', 'bg-blue-50');
+    });
+    
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('border-primary', 'bg-blue-50');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            document.getElementById('image').files = files;
+            document.getElementById('image').dispatchEvent(new Event('change'));
+        }
+    });
+
+    // Inicializar preview
+    updatePreview();
+</script>
+{% endblock %}

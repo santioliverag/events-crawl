@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Eventos Salto - Dashboard{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23075985'><path d='M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5z'/></svg>" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* shadcn/ui inspired design system */
+        :root {
+            --background: 0 0% 100%;
+            --foreground: 222.2 84% 4.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 222.2 84% 4.9%;
+            --popover: 0 0% 100%;
+            --popover-foreground: 222.2 84% 4.9%;
+            --primary: 222.2 47.4% 11.2%;
+            --primary-foreground: 210 40% 98%;
+            --secondary: 210 40% 96%;
+            --secondary-foreground: 222.2 84% 4.9%;
+            --muted: 210 40% 96%;
+            --muted-foreground: 215.4 16.3% 46.9%;
+            --accent: 210 40% 96%;
+            --accent-foreground: 222.2 84% 4.9%;
+            --destructive: 0 84.2% 60.2%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 214.3 31.8% 91.4%;
+            --input: 214.3 31.8% 91.4%;
+            --ring: 222.2 84% 4.9%;
+            --radius: 0.5rem;
+            
+                    /* Custom brand colors */
+        --brand-primary: 213 94% 28%;
+        --brand-secondary: 207 69% 45%;
+        --brand-accent: 38 92% 50%;
+    }
+
+
+
+        * {
+            border-color: hsl(var(--border));
+        }
+
+        body {
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            font-feature-settings: "rlig" 1, "calt" 1;
+        }
+
+        /* shadcn/ui Card component */
+        .card {
+            border-radius: calc(var(--radius) + 2px);
+            border: 1px solid hsl(var(--border));
+            background-color: hsl(var(--card));
+            color: hsl(var(--card-foreground));
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        /* shadcn/ui Button variants */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            border-radius: calc(var(--radius));
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            cursor: pointer;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid hsl(var(--ring));
+            outline-offset: 2px;
+        }
+
+        .btn:disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* Button variants */
+        .btn-default {
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+        }
+        .btn-default:hover {
+            background-color: hsl(var(--primary) / 0.9);
+        }
+
+        .btn-secondary {
+            background-color: hsl(var(--secondary));
+            color: hsl(var(--secondary-foreground));
+        }
+        .btn-secondary:hover {
+            background-color: hsl(var(--secondary) / 0.8);
+        }
+
+        .btn-outline {
+            border: 1px solid hsl(var(--border));
+            background-color: hsl(var(--background));
+        }
+        .btn-outline:hover {
+            background-color: hsl(var(--accent));
+            color: hsl(var(--accent-foreground));
+        }
+
+        .btn-ghost {
+            background-color: transparent;
+        }
+        .btn-ghost:hover {
+            background-color: hsl(var(--accent));
+            color: hsl(var(--accent-foreground));
+        }
+
+        .btn-destructive {
+            background-color: hsl(var(--destructive));
+            color: hsl(var(--destructive-foreground));
+        }
+        .btn-destructive:hover {
+            background-color: hsl(var(--destructive) / 0.9);
+        }
+
+        /* Brand specific buttons */
+        .btn-primary {
+            background-color: hsl(var(--brand-primary));
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: hsl(var(--brand-primary) / 0.9);
+        }
+
+        .btn-brand-secondary {
+            background-color: hsl(var(--brand-secondary));
+            color: white;
+        }
+        .btn-brand-secondary:hover {
+            background-color: hsl(var(--brand-secondary) / 0.9);
+        }
+
+        .btn-accent {
+            background-color: hsl(var(--brand-accent));
+            color: white;
+        }
+        .btn-accent:hover {
+            background-color: hsl(var(--brand-accent) / 0.9);
+        }
+
+        /* Navigation */
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: calc(var(--radius));
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: hsl(var(--muted-foreground));
+            text-decoration: none;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-link:hover {
+            background-color: hsl(var(--accent));
+            color: hsl(var(--accent-foreground));
+        }
+
+        .nav-link.active {
+            background-color: hsl(var(--brand-primary));
+            color: white;
+        }
+
+        /* Sidebar specific styles */
+        .sidebar-hidden {
+            transform: translateX(-100%);
+        }
+
+        /* Ensure no scroll in sidebar */
+        aside {
+            overflow: hidden !important;
+        }
+
+        aside * {
+            overflow: visible;
+        }
+
+        /* Prevent any scrollbar on sidebar */
+        aside::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Badge component */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: calc(var(--radius) - 2px);
+            padding: 0.125rem 0.625rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .badge-default {
+            border: 1px solid transparent;
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+        }
+
+        .badge-secondary {
+            border: 1px solid transparent;
+            background-color: hsl(var(--secondary));
+            color: hsl(var(--secondary-foreground));
+        }
+
+        .badge-outline {
+            color: hsl(var(--foreground));
+            border: 1px solid hsl(var(--border));
+        }
+
+        .badge-destructive {
+            border: 1px solid transparent;
+            background-color: hsl(var(--destructive));
+            color: hsl(var(--destructive-foreground));
+        }
+
+        /* Status badges */
+        .status-pending {
+            background-color: hsl(45 93% 47% / 0.1);
+            color: hsl(45 93% 47%);
+            border: 1px solid hsl(45 93% 47% / 0.2);
+        }
+
+        .status-generated {
+            background-color: hsl(var(--brand-secondary) / 0.1);
+            color: hsl(var(--brand-secondary));
+            border: 1px solid hsl(var(--brand-secondary) / 0.2);
+        }
+
+        .status-published {
+            background-color: hsl(142 71% 45% / 0.1);
+            color: hsl(142 71% 45%);
+            border: 1px solid hsl(142 71% 45% / 0.2);
+        }
+
+        /* Form inputs */
+        .input {
+            display: flex;
+            height: 2.5rem;
+            width: 100%;
+            border-radius: calc(var(--radius));
+            border: 1px solid hsl(var(--border));
+            background-color: hsl(var(--background));
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input:focus {
+            outline: 2px solid hsl(var(--ring));
+            outline-offset: 2px;
+        }
+
+        .input::placeholder {
+            color: hsl(var(--muted-foreground));
+        }
+
+        .input:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .textarea {
+            min-height: 6rem;
+            resize: vertical;
+        }
+
+        /* Alert component */
+        .alert {
+            position: relative;
+            width: 100%;
+            border-radius: calc(var(--radius));
+            border: 1px solid hsl(var(--border));
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-info {
+            background-color: hsl(var(--brand-secondary) / 0.1);
+            border-color: hsl(var(--brand-secondary) / 0.3);
+            color: hsl(var(--brand-secondary));
+        }
+
+        .alert-success {
+            background-color: hsl(142 71% 45% / 0.1);
+            border-color: hsl(142 71% 45% / 0.3);
+            color: hsl(142 71% 45%);
+        }
+
+        .alert-error {
+            background-color: hsl(var(--destructive) / 0.1);
+            border-color: hsl(var(--destructive) / 0.3);
+            color: hsl(var(--destructive));
+        }
+
+        /* Hover animations */
+        .hover-lift {
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: hsl(var(--muted));
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: hsl(var(--muted-foreground) / 0.3);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: hsl(var(--muted-foreground) / 0.5);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: white;
+            border: 2px solid hsl(var(--brand-secondary));
+            border-radius: calc(var(--radius) + 2px);
+            padding: 1rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+            pointer-events: auto;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 24rem;
+            min-width: 20rem;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .toast.hide {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        .toast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            color: hsl(var(--muted-foreground));
+            transition: all 0.15s;
+        }
+
+        .toast-close:hover {
+            background: hsl(var(--muted));
+            color: hsl(var(--foreground));
+        }
+
+        .toast-message {
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-background">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-card border-r transform transition-transform duration-200 ease-in-out lg:translate-x-0" id="sidebar">
+            <div class="flex flex-col h-screen">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 p-6 border-b">
+                    <svg class="h-8 w-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5z"/>
+                    </svg>
+                    <span class="font-bold text-lg">Eventos Salto</span>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="p-4 space-y-2">
+                    <a href="{{ url_for('dashboard') }}" class="nav-link w-full {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 0 012 2v6H8V5z"></path>
+                        </svg>
+                        Dashboard
+                    </a>
+                </nav>
+
+                <!-- Spacer to push content to bottom -->
+                <div class="flex-grow"></div>
+
+                <!-- Actions section -->
+                <div class="p-4 space-y-2">
+                    <div class="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">
+                        Acciones
+                    </div>
+                    
+                    <a href="{{ url_for('add_event') }}" class="nav-link w-full {% if request.endpoint == 'add_event' %}active{% endif %}">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Crear Evento Manual
+                    </a>
+
+                    <button onclick="extractEvents()" class="nav-link w-full text-left">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Extraer Eventos
+                    </button>
+                </div>
+
+                <!-- Bottom section -->
+                <div class="p-4 border-t space-y-2">
+                    <!-- Settings -->
+                    <a href="{{ url_for('settings') }}" class="nav-link w-full {% if request.endpoint == 'settings' %}active{% endif %}">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Configuración
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main content area -->
+        <div class="flex flex-1 flex-col lg:ml-64">
+            <!-- Mobile header -->
+            <header class="lg:hidden flex items-center justify-between p-4 border-b bg-background">
+                <button onclick="toggleSidebar()" class="btn btn-ghost p-2">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <div class="flex items-center gap-2">
+                    <svg class="h-6 w-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12 8.25a3.75 3.75 0 1 0 0 7.5 3.75 3.75 0 0 0 0-7.5z"/>
+                    </svg>
+                    <span class="font-bold">Eventos Salto</span>
+                </div>
+                <div class="w-10"></div> <!-- Spacer for alignment -->
+            </header>
+
+            <!-- Page content -->
+            <main class="flex-1 p-6">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Sidebar overlay for mobile -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" onclick="toggleSidebar()"></div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+
+        // Sidebar functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const isOpen = !sidebar.classList.contains('-translate-x-full');
+            
+            if (isOpen) {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            } else {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            }
+        }
+
+
+
+        // Initialize sidebar for mobile
+        function initSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth < 1024) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+
+        // Initialize on DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initSidebar();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.add('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        });
+
+        // Extract events function
+        function extractEvents() {
+            const button = event.target;
+            const original = showLoading(button);
+            
+            $.post('/api/extract_events')
+                .done(function(data) {
+                    if (data.success) {
+                        showAlert(data.message, 'success');
+                        if (data.new_events > 0) {
+                            setTimeout(() => window.location.reload(), 2000);
+                        }
+                    } else {
+                        showAlert('Error: ' + data.error, 'error');
+                    }
+                })
+                .fail(function() {
+                    showAlert('Error de conexión', 'error');
+                })
+                .always(function() {
+                    hideLoading(button, original);
+                });
+        }
+
+        // Funciones globales existentes
+        function showLoading(button) {
+            const original = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            button.disabled = true;
+            return original;
+        }
+
+        function hideLoading(button, original) {
+            button.innerHTML = original;
+            button.disabled = false;
+        }
+
+        function showAlert(message, type = 'info', duration = 5000) {
+            const container = document.getElementById('toast-container');
+            const toastId = 'toast-' + Date.now();
+            
+            // Icon based on type
+            let icon = '';
+            let typeClass = 'toast-info';
+            let title = 'Información';
+            
+            switch(type) {
+                case 'success':
+                    icon = '<svg class="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                    title = 'Éxito';
+                    break;
+                case 'error':
+                    icon = '<svg class="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                    title = 'Error';
+                    break;
+                default:
+                    icon = '<svg class="h-4 w-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+                    break;
+            }
+            
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <div class="toast-header">
+                    <div class="toast-title">
+                        ${icon}
+                        ${title}
+                    </div>
+                    <button class="toast-close" onclick="hideToast('${toastId}')">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="toast-message">${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Show toast with animation
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Auto-hide
+            setTimeout(() => {
+                hideToast(toastId);
+            }, duration);
+        }
+
+        function hideToast(toastId) {
+            const toast = document.getElementById(toastId);
+            if (toast) {
+                toast.classList.add('hide');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+        }
+
+        // Actualizar timestamp cada minuto
+        function updateTimestamps() {
+            $('.timestamp').each(function() {
+                const timestamp = $(this).data('timestamp');
+                if (timestamp) {
+                    const date = new Date(timestamp);
+                    const now = new Date();
+                    const diff = now - date;
+                    
+                    if (diff < 60000) {
+                        $(this).text('hace un momento');
+                    } else if (diff < 3600000) {
+                        $(this).text(`hace ${Math.floor(diff/60000)} min`);
+                    } else if (diff < 86400000) {
+                        $(this).text(`hace ${Math.floor(diff/3600000)} h`);
+                    } else {
+                        $(this).text(date.toLocaleDateString());
+                    }
+                }
+            });
+        }
+
+        // Ejecutar cada minuto
+        setInterval(updateTimestamps, 60000);
+        updateTimestamps(); // Ejecutar inmediatamente
+
+        // Show flash messages as toasts
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                document.addEventListener('DOMContentLoaded', function() {
+                    {% for category, message in messages %}
+                        showAlert('{{ message|e }}', '{{ category }}');
+                    {% endfor %}
+                });
+            {% endif %}
+        {% endwith %}
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<div class="mb-8">
+    <div class="space-y-1">
+        <h2 class="text-3xl font-bold tracking-tight">Dashboard</h2>
+        <p class="text-muted-foreground">Gestiona los eventos y posts de Instagram</p>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="card p-6 hover-lift">
+        <div class="flex items-center space-x-4">
+            <div class="p-2 bg-blue-100 rounded-lg">
+                <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-muted-foreground">Total Eventos</p>
+                <p class="text-2xl font-bold">{{ stats.get('total_events', 0) }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card p-6 hover-lift">
+        <div class="flex items-center space-x-4">
+            <div class="p-2 bg-orange-100 rounded-lg">
+                <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-muted-foreground">Posts Generados</p>
+                <p class="text-2xl font-bold">{{ stats.get('posts_generated', 0) }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card p-6 hover-lift">
+        <div class="flex items-center space-x-4">
+            <div class="p-2 bg-green-100 rounded-lg">
+                <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-muted-foreground">Publicados</p>
+                <p class="text-2xl font-bold">{{ stats.get('instagram_posted', 0) }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card p-6 hover-lift">
+        <div class="flex items-center space-x-4">
+            <div class="p-2 bg-gray-100 rounded-lg">
+                <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-muted-foreground">Pendientes</p>
+                <p class="text-2xl font-bold">{{ stats.get('pending_posts', 0) }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Events Grid -->
+<div class="card p-6">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h3 class="text-lg font-semibold">Eventos Recientes</h3>
+            <p class="text-sm text-muted-foreground">{{ events|length }} eventos encontrados</p>
+        </div>
+    </div>
+    
+    {% if events %}
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            {% for event in events %}
+                <div class="card border p-4 hover-lift">
+                    <!-- Event Image -->
+                    <div class="mb-4">
+                        {% if event.post_path %}
+                            <img src="{{ url_for('serve_image', filename=event.post_path) }}" 
+                                 alt="{{ event.title }}" 
+                                 class="w-full h-48 object-cover rounded-md">
+                        {% elif event.image_path %}
+                            <img src="{{ url_for('serve_image', filename=event.image_path) }}" 
+                                 alt="{{ event.title }}" 
+                                 class="w-full h-48 object-cover rounded-md">
+                        {% else %}
+                            <div class="w-full h-48 bg-muted rounded-md flex items-center justify-center">
+                                <svg class="h-8 w-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Event Info -->
+                    <div class="mb-4">
+                        <h4 class="font-semibold mb-2 line-clamp-2">{{ event.title }}</h4>
+                        
+                        {% if event.formatted_date %}
+                            <div class="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <span>{{ event.formatted_date }}</span>
+                            </div>
+                        {% endif %}
+                        
+                        <p class="text-sm text-muted-foreground line-clamp-3">{{ event.description[:100] }}...</p>
+                    </div>
+                    
+                    <!-- Status Badge -->
+                    <div class="mb-4">
+                        {% if event.instagram_posted %}
+                            <span class="badge status-published">
+                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Publicado
+                            </span>
+                        {% elif event.post_generated %}
+                            <span class="badge status-generated">
+                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Post Generado
+                            </span>
+                        {% else %}
+                            <span class="badge status-pending">
+                                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Pendiente
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="flex gap-2">
+                        <a href="{{ url_for('preview_event', event_id=event.id) }}" 
+                           class="btn btn-outline text-sm flex-1 justify-center">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            Ver
+                        </a>
+                        
+                        {% if not event.post_generated %}
+                            <button onclick="generatePost({{ event.id }})" 
+                                    class="btn btn-brand-secondary text-sm flex-1 justify-center"
+                                    id="gen-btn-{{ event.id }}">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2M7 4h10l1 16H6L7 4zM9 9v8M15 9v8"></path>
+                                </svg>
+                                Generar
+                            </button>
+                        {% elif not event.instagram_posted %}
+                            <button onclick="publishPost({{ event.id }})" 
+                                    class="btn btn-accent text-sm flex-1 justify-center"
+                                    id="pub-btn-{{ event.id }}">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16l13-8L7 4z"></path>
+                                </svg>
+                                Publicar
+                            </button>
+                        {% else %}
+                            <span class="btn btn-secondary text-sm flex-1 justify-center opacity-50 cursor-not-allowed">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Listo
+                            </span>
+                        {% endif %}
+                        
+                        <button onclick="deleteEvent({{ event.id }})" 
+                                class="btn btn-destructive text-sm">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-16">
+            <svg class="mx-auto h-16 w-16 text-muted-foreground mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <h3 class="text-lg font-semibold mb-2">No hay eventos</h3>
+            <p class="text-muted-foreground mb-6 max-w-sm mx-auto">Usa el menú lateral para extraer eventos o crear eventos personalizados</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function extractEvents() {
+        const btn = event.target;
+        const original = showLoading(btn);
+        
+        $.post('/api/extract_events')
+            .done(function(data) {
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    if (data.new_events > 0) {
+                        setTimeout(() => location.reload(), 2000);
+                    }
+                } else {
+                    showAlert('Error: ' + data.error, 'error');
+                }
+            })
+            .fail(function() {
+                showAlert('Error de conexión', 'error');
+            })
+            .always(function() {
+                hideLoading(btn, original);
+            });
+    }
+
+    function generatePost(eventId) {
+        const btn = $(`#gen-btn-${eventId}`)[0];
+        const original = showLoading(btn);
+        
+        $.get(`/api/generate_post/${eventId}`)
+            .done(function(data) {
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    showAlert('Error: ' + data.error, 'error');
+                }
+            })
+            .fail(function() {
+                showAlert('Error de conexión', 'error');
+            })
+            .always(function() {
+                hideLoading(btn, original);
+            });
+    }
+
+    function publishPost(eventId) {
+        if (!confirm('¿Estás seguro de que quieres publicar este post en Instagram?')) {
+            return;
+        }
+        
+        const btn = $(`#pub-btn-${eventId}`)[0];
+        const original = showLoading(btn);
+        
+        $.get(`/api/publish_post/${eventId}`)
+            .done(function(data) {
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    showAlert('Error: ' + data.error, 'error');
+                }
+            })
+            .fail(function() {
+                showAlert('Error de conexión', 'error');
+            })
+            .always(function() {
+                hideLoading(btn, original);
+            });
+    }
+
+    function deleteEvent(eventId) {
+        if (!confirm('¿Estás seguro de que quieres eliminar este evento? Esta acción no se puede deshacer.')) {
+            return;
+        }
+        
+        $.ajax({
+            url: `/api/delete_event/${eventId}`,
+            method: 'DELETE'
+        })
+        .done(function(data) {
+            if (data.success) {
+                showAlert(data.message, 'success');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showAlert('Error: ' + data.error, 'error');
+            }
+        })
+        .fail(function() {
+            showAlert('Error de conexión', 'error');
+        });
+    }
+</script>
+{% endblock %}

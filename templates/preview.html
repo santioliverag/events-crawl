@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }} - Preview{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <a href="{{ url_for('dashboard') }}" class="text-primary hover:text-secondary flex items-center gap-2 mb-4">
+        <i class="fas fa-arrow-left"></i>
+        Volver al Dashboard
+    </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Event Details -->
+    <div class="card p-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Detalles del Evento</h2>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Título</label>
+                <p class="text-gray-900 font-medium">{{ event.title }}</p>
+            </div>
+            
+            {% if event.formatted_date %}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-calendar text-primary"></i>
+                        <p class="text-gray-900">{{ event.formatted_date }}</p>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                <p class="text-gray-700 leading-relaxed">{{ event.description }}</p>
+            </div>
+            
+            {% if event.link %}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Enlace Original</label>
+                    <a href="{{ event.link }}" target="_blank" 
+                       class="text-primary hover:text-secondary underline flex items-center gap-2">
+                        <i class="fas fa-external-link-alt"></i>
+                        Ver en salto.gub.uy
+                    </a>
+                </div>
+            {% endif %}
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                <div class="flex gap-2">
+                    {% if event.instagram_posted %}
+                        <span class="status-published px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fab fa-instagram"></i> Publicado en Instagram
+                        </span>
+                    {% elif event.post_generated %}
+                        <span class="status-generated px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-image"></i> Post Generado
+                        </span>
+                    {% else %}
+                        <span class="status-pending px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-clock"></i> Pendiente
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Extraído</label>
+                <p class="text-gray-600 text-sm">
+                    <i class="fas fa-clock"></i>
+                    {{ event.created_at }}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Post Preview -->
+    <div class="card p-6">
+        <h3 class="text-xl font-semibold text-gray-900 mb-6">Preview del Post</h3>
+        
+        <div class="space-y-6">
+            <!-- Instagram Post Mockup -->
+            <div class="bg-gray-50 rounded-lg p-4">
+                <div class="bg-white rounded-lg shadow-sm max-w-sm mx-auto">
+                    <!-- Instagram Header -->
+                    <div class="flex items-center p-3 border-b">
+                        <div class="w-8 h-8 bg-gradient-to-tr from-yellow-400 to-pink-500 rounded-full flex items-center justify-center">
+                            <span class="text-white text-xs font-bold">🌙</span>
+                        </div>
+                        <div class="ml-3">
+                            <p class="font-semibold text-sm">flet.lat</p>
+                            <p class="text-xs text-gray-500">Salto, Uruguay</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Post Image -->
+                    <div class="aspect-square bg-gray-200 relative">
+                        {% if event.post_path %}
+                            <img src="{{ url_for('serve_image', filename=event.post_path) }}" 
+                                 alt="{{ event.title }}" 
+                                 class="w-full h-full object-cover">
+                        {% elif event.image_path %}
+                            <img src="{{ url_for('serve_image', filename=event.image_path) }}" 
+                                 alt="{{ event.title }}" 
+                                 class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
+                                <span class="text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
+                                    Post no generado
+                                </span>
+                            </div>
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center">
+                                <div class="text-center text-gray-400">
+                                    <i class="fas fa-image text-3xl mb-2"></i>
+                                    <p class="text-sm">Sin imagen</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Instagram Actions -->
+                    <div class="p-3">
+                        <div class="flex items-center mb-3">
+                            <i class="far fa-heart text-xl mr-3"></i>
+                            <i class="far fa-comment text-xl mr-3"></i>
+                            <i class="far fa-paper-plane text-xl"></i>
+                        </div>
+                        
+                        <!-- Caption Preview -->
+                        <div class="text-sm">
+                            <span class="font-semibold">flet.lat</span>
+                            <span class="ml-1">
+                                🎉 {{ event.title }}
+                                {% if event.formatted_date %}
+                                <br><br>📅 {{ event.formatted_date }}
+                                {% endif %}
+                                <br><br>{{ event.description[:100] }}{% if event.description|length > 100 %}...{% endif %}
+                                <br><br>#EventosSalto #Salto #Uruguay #Cultura
+                                <br><br>📍 salto.gub.uy/eventos
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="flex flex-col gap-3">
+                {% if not event.post_generated %}
+                    <button onclick="generatePost({{ event.id }})" 
+                            class="btn btn-secondary w-full justify-center"
+                            id="gen-btn">
+                        <i class="fas fa-magic"></i>
+                        Generar Post para Instagram
+                    </button>
+                {% elif not event.instagram_posted %}
+                    <button onclick="publishPost({{ event.id }})" 
+                            class="btn btn-accent w-full justify-center"
+                            id="pub-btn">
+                        <i class="fab fa-instagram"></i>
+                        Publicar en Instagram
+                    </button>
+                    
+                    <button onclick="regeneratePost({{ event.id }})" 
+                            class="btn btn-secondary w-full justify-center">
+                        <i class="fas fa-redo"></i>
+                        Regenerar Post
+                    </button>
+                {% else %}
+                    <div class="text-center py-4">
+                        <div class="text-green-600 mb-2">
+                            <i class="fas fa-check-circle text-3xl"></i>
+                        </div>
+                        <p class="font-medium text-green-700">¡Publicado exitosamente!</p>
+                        <p class="text-sm text-gray-600">Este evento ya está en Instagram</p>
+                    </div>
+                {% endif %}
+                
+                <button onclick="deleteEvent({{ event.id }})" 
+                        class="btn btn-danger w-full justify-center">
+                    <i class="fas fa-trash"></i>
+                    Eliminar Evento
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function generatePost(eventId) {
+        const btn = $('#gen-btn')[0];
+        const original = showLoading(btn);
+        
+        $.get(`/api/generate_post/${eventId}`)
+            .done(function(data) {
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    showAlert('Error: ' + data.error, 'error');
+                }
+            })
+            .fail(function() {
+                showAlert('Error de conexión', 'error');
+            })
+            .always(function() {
+                hideLoading(btn, original);
+            });
+    }
+
+    function publishPost(eventId) {
+        if (!confirm('¿Estás seguro de que quieres publicar este post en Instagram?')) {
+            return;
+        }
+        
+        const btn = $('#pub-btn')[0];
+        const original = showLoading(btn);
+        
+        $.get(`/api/publish_post/${eventId}`)
+            .done(function(data) {
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    showAlert('Error: ' + data.error, 'error');
+                }
+            })
+            .fail(function() {
+                showAlert('Error de conexión', 'error');
+            })
+            .always(function() {
+                hideLoading(btn, original);
+            });
+    }
+
+    function regeneratePost(eventId) {
+        if (!confirm('¿Estás seguro de que quieres regenerar el post? Esto reemplazará el post actual.')) {
+            return;
+        }
+        
+        generatePost(eventId);
+    }
+
+    function deleteEvent(eventId) {
+        if (!confirm('¿Estás seguro de que quieres eliminar este evento? Esta acción no se puede deshacer.')) {
+            return;
+        }
+        
+        $.ajax({
+            url: `/api/delete_event/${eventId}`,
+            method: 'DELETE'
+        })
+        .done(function(data) {
+            if (data.success) {
+                showAlert(data.message, 'success');
+                setTimeout(() => window.location.href = '/', 2000);
+            } else {
+                showAlert('Error: ' + data.error, 'error');
+            }
+        })
+        .fail(function() {
+            showAlert('Error de conexión', 'error');
+        });
+    }
+</script>
+{% endblock %}

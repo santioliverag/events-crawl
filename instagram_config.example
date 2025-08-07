@@ -1,0 +1,23 @@
+# Configuración de Instagram para publicación automática
+# 
+# Copia este archivo como 'instagram_config.py' y configura tus credenciales
+
+# OPCIÓN 1: Instagram Business API (Oficial - Más complejo de configurar)
+# Requiere: App de Facebook, Instagram Business Account
+INSTAGRAM_ACCESS_TOKEN = ""
+INSTAGRAM_BUSINESS_ACCOUNT_ID = ""
+FACEBOOK_PAGE_ID = ""
+
+# OPCIÓN 2: Instagram Simple (No oficial - Más fácil de configurar)
+# Solo requiere usuario y contraseña de Instagram
+INSTAGRAM_USERNAME = ""
+INSTAGRAM_PASSWORD = ""
+
+# Configuración del sistema
+AUTO_PUBLISH_INSTAGRAM = True
+MAX_POSTS_PER_DAY = 5
+PUBLISH_DELAY_MINUTES = 10
+
+# Para configurar las variables de entorno (alternativa):
+# export INSTAGRAM_USERNAME="tu_usuario"
+# export INSTAGRAM_PASSWORD="tu_contraseña"
