@@ -69,24 +69,9 @@ async def main():
                     
                     logger.info(f"Post de Instagram generado: {post_path}")
                     
-                    # Publicar automáticamente en Instagram si está configurado
-                    if instagram_publisher.is_configured():
-                        logger.info(f"Publicando en Instagram: {evento['title']}")
-                        
-                        try:
-                            post_id = await instagram_publisher.publish_post(evento, post_path)
-                            
-                            if post_id:
-                                # Marcar como publicado en la base de datos
-                                db_manager.mark_instagram_posted(event_id)
-                                logger.info(f"✅ Publicado exitosamente en Instagram: {post_id}")
-                            else:
-                                logger.warning(f"❌ Error publicando en Instagram: {evento['title']}")
-                                
-                        except Exception as e:
-                            logger.error(f"Error en publicación automática de Instagram: {e}")
-                    else:
-                        logger.info("Instagram no configurado - solo se generó el post local")
+                    # NOTA: Publicación automática DESACTIVADA por solicitud del usuario
+                    # Solo se genera el post, la publicación requiere aprobación manual desde el dashboard
+                    logger.info("Post generado - publicación requiere aprobación manual desde el dashboard")
                 else:
                     logger.info(f"Evento ya existe: {evento['title']}")
                     
